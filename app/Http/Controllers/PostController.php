@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
 use Cviebrock\EloquentSluggable\Services\SlugService;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -45,6 +46,7 @@ class PostController extends Controller
             'describtion' =>  $request->description,
             'user_id' =>  $request->user_id,
             'slug' => SlugService::createSlug(Post::class, 'slug', $request->title),
+            'image' => Post::storePostImage($request)
         ]);
         return redirect()->route('posts.index');
     }
@@ -81,12 +83,19 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post)
     {   
-        $post->update([
-            'title' => $request->title,
-            'describtion' =>  $request->description,
-            'user_id' =>  $request->user_id,
-            'slug' => SlugService::createSlug(Post::class, 'slug', $request->title),
-        ]);
+        $attributes = [
+            [
+                'title' => $request->title,
+                'describtion' =>  $request->description,
+                'user_id' =>  $request->user_id,
+                'slug' => SlugService::createSlug(Post::class, 'slug', $request->title),
+            ]
+        ];
+        if ($request->hasFile('image')){
+            $attributes['image'] = Post::storePostImage($request);
+            Storage::delete('public/'.$post->image);
+        }
+        $post->update($attributes);
         return redirect()->route('posts.show', ['post' => $request->post]);
     }
 
@@ -96,8 +105,9 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post  $post)
+    public function destroy(Post $post)
     {
+        if ($post->image) Storage::delete('public/'.$post->image);
         $post->delete();
         return redirect()->route('posts.index');
     }

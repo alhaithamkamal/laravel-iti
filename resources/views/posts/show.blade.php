@@ -8,6 +8,9 @@
         <div class="card-body">
             <h5 class="d-inline card-title">Title :- </h5>{{ $post->title }}
             <h5 class="card-text">Description :- </h5>{{ $post->describtion }}.
+            @if($post->image)
+            <img src="{{asset('storage/'.$post->image)}}" class="card-img-top" alt="image">
+            @endif
         </div>
     </div>
     <br>

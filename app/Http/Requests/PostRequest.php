@@ -28,10 +28,11 @@ class PostRequest extends FormRequest
             'title' => [
                 'required',
                 'min:3',
-                Rule::unique('posts')->ignore($this->post->id),
+                $this->post ? Rule::unique('posts')->ignore($this->post->id) : 'unique:posts',
             ],
             'description' => 'required|min:10',
-            'user_id' => 'required'
+            'user_id' => 'required',
+            'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }

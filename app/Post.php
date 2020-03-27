@@ -8,14 +8,10 @@ use Cviebrock\EloquentSluggable\Sluggable;
 class Post extends Model
 {
     use Sluggable;
-    protected $fillable = [
-        'title',
-        'describtion',
-        'user_id',
-        'slug'
-    ];
+    protected $fillable = ['title', 'describtion', 'user_id', 'slug', 'image'];
 
-    function user(){
+    public function user()
+    {
         return $this->belongsTo('App\User');
     }
 
@@ -26,6 +22,12 @@ class Post extends Model
                 'source' => 'title'
             ]
         ];
+    }
+    public static function storePostImage($request)
+    {
+        $path = $request->file('image')->store('public/images');
+        $path = str_replace('public/', '', $path);
+        return $path;
     }
     
 }
