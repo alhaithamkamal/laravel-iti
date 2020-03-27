@@ -45,7 +45,6 @@ class PostController extends Controller
             'title' => $request->title,
             'describtion' =>  $request->description,
             'user_id' =>  $request->user_id,
-            'slug' => SlugService::createSlug(Post::class, 'slug', $request->title),
             'image' => Post::storePostImage($request)
         ]);
         return redirect()->route('posts.index');
@@ -88,7 +87,6 @@ class PostController extends Controller
                 'title' => $request->title,
                 'describtion' =>  $request->description,
                 'user_id' =>  $request->user_id,
-                'slug' => SlugService::createSlug(Post::class, 'slug', $request->title),
             ]
         ];
         if ($request->hasFile('image')){

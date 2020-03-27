@@ -25,8 +25,11 @@ class Post extends Model
     }
     public static function storePostImage($request)
     {
-        $path = $request->file('image')->store('public/images');
-        $path = str_replace('public/', '', $path);
+        if ($request->file('image')) {
+            $path = $request->file('image')->store('public/images');
+            $path = str_replace('public/', '', $path);
+        }else
+            $path = null;
         return $path;
     }
     
