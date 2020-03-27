@@ -6,6 +6,7 @@ use App\Post;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
+use Cviebrock\EloquentSluggable\Services\SlugService;
 
 class PostController extends Controller
 {
@@ -43,6 +44,7 @@ class PostController extends Controller
             'title' => $request->title,
             'describtion' =>  $request->description,
             'user_id' =>  $request->user_id,
+            'slug' => SlugService::createSlug(Post::class, 'slug', $request->title),
         ]);
         return redirect()->route('posts.index');
     }
@@ -64,7 +66,7 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post  $post)
+    public function edit(Post $post)
     {
         $users = User::all();
         return view('posts.edit', ['post' => $post, 'users' => $users]);
@@ -83,6 +85,7 @@ class PostController extends Controller
             'title' => $request->title,
             'describtion' =>  $request->description,
             'user_id' =>  $request->user_id,
+            'slug' => SlugService::createSlug(Post::class, 'slug', $request->title),
         ]);
         return redirect()->route('posts.show', ['post' => $request->post]);
     }
