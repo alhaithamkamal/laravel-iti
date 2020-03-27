@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="container">
-    <form method="POST" action="{{route('posts.store')}}">
+    <form class="my-3" method="POST" action="{{route('posts.store')}}">
         @csrf
         <div class="form-group">
         <label >Title</label>
@@ -9,9 +9,7 @@
         </div>
         <div class="form-group">
         <label for="exampleInputPassword1">Description</label>
-        <textarea name="description" class="form-control">
-
-        </textarea>
+        <textarea name="description" class="form-control"></textarea>
         </div>
 
         <div class="form-group">
@@ -25,5 +23,14 @@
 
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
 </div>
 @endsection

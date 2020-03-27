@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Post;
 use App\User;
-use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
+use App\Http\Requests\PostRequest;
 
 class PostController extends Controller
 {
@@ -37,9 +37,8 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        $request = request();
         Post::create([
             'title' => $request->title,
             'describtion' =>  $request->description,
@@ -54,10 +53,8 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show()
+    public function show(Post  $post)
     {
-        $post_id = request('post');
-        $post = Post::find($post_id);
         return view('posts.show', ['post' => $post]);
     }
 
@@ -67,11 +64,9 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit()
+    public function edit(Post  $post)
     {
         $users = User::all();
-        $post_id = request('post');
-        $post = Post::find($post_id);
         return view('posts.edit', ['post' => $post, 'users' => $users]);
     }
 
@@ -82,10 +77,8 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update()
-    {
-        $request = request();
-        $post = Post::find($request->post);
+    public function update(PostRequest $request, Post $post)
+    {   
         $post->update([
             'title' => $request->title,
             'describtion' =>  $request->description,
@@ -100,9 +93,8 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy()
+    public function destroy(Post  $post)
     {
-        $post = Post::find(request('post'));
         $post->delete();
         return redirect()->route('posts.index');
     }
