@@ -46,9 +46,9 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function redirectToProvider()
+    public function redirectToProvider($provider)
     {
-        return Socialite::driver('github')->redirect();
+        return Socialite::driver($provider)->redirect();
     }
 
     /**
@@ -56,29 +56,29 @@ class LoginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function handleProviderCallback()
+    public function handleProviderCallback($provider)
     {
-        $user = Socialite::driver('github')->stateless()->user();
-        $authUser = $this->findOrCreateUser($user);
+        $user = Socialite::driver($provider)->stateless()->user();
+        $authUser = $this->findOrCreateUser($user, $provider);
         Auth::login($authUser);
 
         return redirect()->route('home');
     }
 
-    private function findOrCreateUser($githubUser)
+    private function findOrCreateUser($user, $provider)
     {
-        if ($authUser = User::where('github_id', $githubUser->id)->first()) {
+        if ($authUser = User::where($provider.'_id', $user->id)->first()) {
             return $authUser;
         }
-        if ($authUser = User::where('email', $githubUser->email)->first()) {
-            $authUser->github_id = $githubUser->id;
+        if ($authUser = User::where('email', $user->email)->first()) {
+            $provider === 'github'? $authUser->github_id = $user->id : $authUser->google_id = $user->id;
             return $authUser->save();
         }
 
         return User::create([
-            'name' => $githubUser->name,
-            'email' => $githubUser->email,
-            'github_id' => $githubUser->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'github_id' => $user->id,
         ]);
     }
 }

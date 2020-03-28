@@ -26,8 +26,8 @@ Route::group(['middleware' => 'auth'], function(){
     Route::put('/posts/{post}', 'PostController@update')->name('posts.update');
     Route::delete('/posts/{post}', 'PostController@destroy')->name('posts.destroy');
 });
-Route::get('login/github', 'Auth\LoginController@redirectToProvider');
-Route::get('login/github/callback', 'Auth\LoginController@handleProviderCallback');
+Route::get('login/{github}', 'Auth\LoginController@redirectToProvider');
+Route::get('login/{github}/callback', 'Auth\LoginController@handleProviderCallback');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
